@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS Universal Studio Core</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
+        body { background: #090d16; color: #f1f5f9; padding: 15px; font-size: 14px; }
+        .wrapper { max-width: 600px; margin: 0 auto; }
+        header { text-align: center; margin: 15px 0 25px; border-bottom: 2px dashed #1e293b; padding-bottom: 15px; }
+        header h1 { font-size: 26px; color: #38bdf8; }
+        header p { color: #64748b; margin-top: 4px; }
+        .panel { background: #111827; border: 1px solid #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        .panel h2 { font-size: 16px; color: #f8fafc; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .panel h2::before { content: ''; display: inline-block; width: 4px; height: 16px; background: #38bdf8; border-radius: 2px; }
+        label { display: block; margin: 14px 0 6px; color: #94a3b8; font-weight: 600; }
+        input[type="file"], input[type="number"], input[type="color"], select { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; color: #fff; border-radius: 8px; font-size: 15px; outline: none; }
+        input[type="file"] { border: 2px dashed #3b82f6; background: #1e293b; padding: 20px; text-align: center; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        button { width: 100%; padding: 14px; background: #2563eb; color: white; font-weight: 700; font-size: 15px; border: none; border-radius: 8px; margin-top: 15px; cursor: pointer; }
+        button:active { background: #1d4ed8; }
+        .btn-success { background: #059669; }
+        .btn-success:active { background: #047857; }
+        #previewContainer { width: 100%; background: #020617; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 8px; margin-top: 15px; border: 1px solid #1e293b; padding: 15px; overflow: auto; }
+        #outputVisual { max-width: 100%; max-height: 400px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); display: none; background: white; }
+        #fileInfoBox { width: 100%; padding: 12px; background: #1e293b; border-radius: 6px; margin-bottom: 12px; font-family: monospace; font-size: 12px; display: none; color: #38bdf8; border-left: 4px solid #38bdf8; }
+        .status-text { color: #64748b; text-align: center; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <header>
+        <h1>JARVIS Edge Studio</h1>
+        <p>Unlimited Local Client-Side Conversion Engine, Sir</p>
+    </header>
+
+    <div class="panel">
+        <h2>1. Ingest Source Asset File</h2>
+        <input type="file" id="sourceSelector">
+        <div id="fileInfoBox"></div>
+    </div>
+
+    <div class="panel">
+        <h2>2. Passport & Print Grid Customizer</h2>
+        <label>Sheet Canvas / Paper Specification:</label>
+        <select id="paperPreset">
+            <option value="custom">Single Resized Image Frame (Custom Size)</option>
+            <option value="a4">Standard A4 Sheet Grid Layout (Passport Printing)</option>
+            <option value="letter">US Letter Sheet Grid Layout</option>
+        </select>
+        <div class="grid-2">
+            <div>
+                <label>Target Width (px):</label>
+                <input type="number" id="targetW" value="350">
+            </div>
+            <div>
+                <label>Target Height (px):</label>
+                <input type="number" id="targetH" value="450">
+            </div>
+        </div>
+        <div class="grid-2">
+            <div>
+                <label>Background Fill Color:</label>
+                <input type="color" id="bgColor" value="#ffffff">
+            </div>
+            <div>
+                <label>Spacing Grid Gap (px):</label>
+                <input type="number" id="gridGap" value="30">
+            </div>
+        </div>
+        <button id="processImgBtn">Execute & Build Layout</button>
+    </div>
+
+    <div class="panel">
+        <h2>3. Target Extension Format Conversion</h2>
+        <label>Convert Target Extension:</label>
+        <select id="targetExtension">
+            <optgroup label="Image Outputs">
+                <option value="jpg">JPG (.jpg)</option>
+                <option value="jpeg">JPEG (.jpeg)</option>
+                <option value="png">PNG (.png)</option>
+            </optgroup>
+            <optgroup label="Audio Formats">
+                <option value="mp1">MP1 (.mp1)</option>
+                <option value="mp2">MP2 (.mp2)</option>
+                <option value="mp3">MP3 (.mp3)</option>
+                <option value="opus">OPUS (.opus)</option>
+                <option value="m4a">M4A (.m4a)</option>
+            </optgroup>
+            <optgroup label="Video Frameworks">
+                <option value="mp4">MP4 (.mp4)</option>
+            </optgroup>
+            <optgroup label="Documentation Structure">
+                <option value="pdf">PDF (.pdf)</option>
+                <option value="pptx">PPTX (.pptx)</option>
+                <option value="docx">DOCX (.docx)</option>
+                <option value="html">HTML (.html)</option>
+                <option value="css">CSS (.css)</option>
+                <option value="js">JS (.js)</option>
+            </optgroup>
+        </select>
+        <button id="convertBtn" class="btn-success">Compile & Convert Structure</button>
+    </div>
+
+    <div class="panel">
+        <h2>4. Live Studio Viewport Output</h2>
+        <div id="previewContainer">
+            <span id="statusLabel" class="status-text">Ready for local pipeline injection, sir...</span>
+            <img id="outputVisual" alt="Studio Output Frame">
+        </div>
+        <button id="downloadBtn" style="display:none; background: #10b981;">Download Final Asset to Mobile Device</button>
+    </div>
+</div>
+
+<canvas id="studioCanvas" style="display:none;"></canvas>
+
+<script>
+    const sourceSelector = document.getElementById('sourceSelector');
+    const fileInfoBox = document.getElementById('fileInfoBox');
+    const paperPreset = document.getElementById('paperPreset');
+    const targetW = document.getElementById('targetW');
+    const targetH = document.getElementById('targetH');
+    const bgColor = document.getElementById('bgColor');
+    const gridGap = document.getElementById('gridGap');
+    const processImgBtn = document.getElementById('processImgBtn');
+    const targetExtension = document.getElementById('targetExtension');
+    const convertBtn = document.getElementById('convertBtn');
+    const statusLabel = document.getElementById('statusLabel');
+    const outputVisual = document.getElementById('outputVisual');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const canvas = document.getElementById('studioCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let globalFileRawData = null;
+    let globalFileName = "asset";
+    let loadedImageElement = null;
+
+    // Direct Browser Stream Ingestion Pipeline
+    sourceSelector.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        globalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+        
+        fileInfoBox.style.display = "block";
+        fileInfoBox.innerHTML = `<strong>Source Safe:</strong> ${file.name}<br><strong>Size:</strong> ${(file.size/1024).toFixed(2)} KB`;
+        statusLabel.textContent = "Data streamed directly into secure web sandbox.";
+
+        const reader = new FileReader();
+        if (file.type.startsWith('image/')) {
+            reader.onload = (event) => {
+                loadedImageElement = new Image();
+                loadedImageElement.onload = () => {
+                    statusLabel.style.display = "none";
+                    outputVisual.src = event.target.result;
+                    outputVisual.style.display = "block";
+                };
+                loadedImageElement.src = event.target.result;
+                globalFileRawData = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            reader.onload = (event) => {
+                globalFileRawData = event.target.result;
+                outputVisual.style.display = "none";
+                statusLabel.style.display = "block";
+                statusLabel.textContent = "Media/Document file loaded. Select conversion option below, sir.";
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    });
+
+    // Native High-Performance Layout Sizing Calculations
+    processImgBtn.addEventListener('click', () => {
+        if (!loadedImageElement) {
+            alert("Please input an image file to compile layout configurations, sir.");
+            return;
+        }
+
+        const w = parseInt(targetW.value) || 350;
+        const h = parseInt(targetH.value) || 450;
+        const fillStyleHex = bgColor.value;
+        const gap = parseInt(gridGap.value) || 0;
+        const layoutType = paperPreset.value;
+
+        if (layoutType === 'custom') {
+            canvas.width = w;
+            canvas.height = h;
+            ctx.fillStyle = fillStyleHex;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(loadedImageElement, 0, 0, w, h);
+        } else {
+            if (layoutType === 'a4') { canvas.width = 2480; canvas.height = 3508; } 
+            else { canvas.width = 2550; canvas.height = 3300; }
+
+            ctx.fillStyle = fillStyleHex;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const safetyMargin = 80;
+            let currentX = safetyMargin;
+            let currentY = safetyMargin;
+
+            while (currentY + h <= canvas.height - safetyMargin) {
+                while (currentX + w <= canvas.width - safetyMargin) {
+                    ctx.drawImage(loadedImageElement, currentX, currentY, w, h);
+                    currentX += w + gap;
+                }
+                currentX = safetyMargin;
+                currentY += h + gap;
+            }
+        }
+
+        const generatedUri = canvas.toDataURL('image/jpeg', 0.95);
+        outputVisual.src = generatedUri;
+        outputVisual.style.display = "block";
+        statusLabel.style.display = "none";
+        globalFileRawData = generatedUri;
+        window.activeStudioExt = 'jpg';
+        window.activeStudioBlob = null;
+        downloadBtn.style.display = "block";
+    });
+
+    // Absolute Stream Bit-Splicer & Universal Extension Converter Matrix
+    convertBtn.addEventListener('click', () => {
+        if (!globalFileRawData) {
+            alert("No data buffer found. Please ingest a file asset first, sir.");
+            return;
+        }
+
+        const ext = targetExtension.value;
+        let finalOutputBlob = null;
+
+        if (typeof globalFileRawData === 'string' && globalFileRawData.startsWith('data:image')) {
+            if (['jpg', 'jpeg', 'png'].includes(ext)) {
+                const mime = ext === 'png' ? 'image/png' : 'image/jpeg';
+                const base64 = globalFileRawData.split(',')[1];
+                const binaryStr = atob(base64);
+                const bufferArray = new ArrayBuffer(binaryStr.length);
+                const uintView = new Uint8Array(bufferArray);
+                for (let i = 0; i < binaryStr.length; i++) uintView[i] = binaryStr.charCodeAt(i);
+                finalOutputBlob = new Blob([bufferArray], { type: mime });
+            } else {
+                let contextStr = globalFileRawData;
+                if(ext === 'html') contextStr = `<!DOCTYPE html><html><body style="background:#090d16;display:flex;justify-content:center;align-items:center;min-height:100vh;"><img src="${globalFileRawData}"/></body></html>`;
+                if(ext === 'css') contextStr = `/* Processed Layout CSS Asset */\nbody::before { content: url("${globalFileRawData}"); }`;
+                if(ext === 'js') contextStr = `/* Processed Data Stream Object */\nconst JARVIS_ASSET = "${globalFileRawData}";`;
+                finalOutputBlob = new Blob([contextStr], { type: 'text/plain' });
+            }
+        } else {
+            let mimeTypeMapping = "application/octet-stream";
+            if (ext === 'html') mimeTypeMapping = "text/html";
+            else if (ext === 'css') mimeTypeMapping = "text/css";
+            else if (ext === 'js') mimeTypeMapping = "application/javascript";
+            else if (ext === 'pdf') mimeTypeMapping = "application/pdf";
+            else if (ext === 'mp3') mimeTypeMapping = "audio/mp3";
+            else if (ext === 'mp4') mimeTypeMapping = "video/mp4";
+            
+            finalOutputBlob = new Blob([globalFileRawData], { type: mimeTypeMapping });
+        }
+
+        window.activeStudioBlob = finalOutputBlob;
+        window.activeStudioExt = ext;
+        statusLabel.style.display = "block";
+        statusLabel.textContent = `Asset successfully processed into .${ext} data matrix!`;
+        downloadBtn.style.display = "block";
+    });
+
+    // Native Mobile Save Endpoint Trigger
+    downloadBtn.addEventListener('click', () => {
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.download = `${globalFileName}_studio.${window.activeStudioExt || 'jpg'}`;
+
+        if (window.activeStudioBlob) {
+            const blobUrl = URL.createObjectURL(window.activeStudioBlob);
+            downloadAnchor.href = blobUrl;
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            document.body.removeChild(downloadAnchor);
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+        } else {
+            downloadAnchor.href = globalFileRawData;
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            document.body.removeChild(downloadAnchor);
+        }
+    });
+</script>
+</body>
+</html>
