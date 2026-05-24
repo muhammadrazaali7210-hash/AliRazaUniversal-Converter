@@ -91,7 +91,7 @@
             font-weight: 500;
         }
 
-        /* Input field is positioned offscreen but kept accessible for mobile browsers */
+        /* Positioned offscreen but accessible for mobile touch routers */
         #file-input {
             position: absolute;
             left: -9999px;
@@ -180,9 +180,9 @@
     </header>
 
     <div class="main-container">
-        <div class="drop-zone" onclick="document.getElementById('file-input').click();">
+        <div class="drop-zone">
             <p>Select Target Asset Data Stream</p>
-            <span style="display:block; font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Tap anywhere inside this box to browse</span>
+            <span style="display:block; font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Tap anywhere inside this box to browse files</span>
         </div>
         
         <input type="file" id="file-input">
@@ -227,6 +227,8 @@
     </div>
 
     <canvas id="conversion-canvas"></canvas>
+
+    <script src="input-handler.js"></script>
 
     <script src="converter-core.js"></script>
 </body>
