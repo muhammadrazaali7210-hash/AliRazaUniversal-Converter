@@ -1,15 +1,11 @@
 /**
  * ==================================================================================
- * JARVIS UNIVERSAL QUANTUM CORE ENGINE
+ * JARVIS UNIVERSAL QUANTUM CORE ENGINE (STANDALONE ARCHITECTURE)
  * ==================================================================================
  * DESCRIPTION: High-Performance, Client-Side Omni-Format Structural Transcoder
  * HARDWARE TARGET: MediaTek Helio G35 Octa-Core Optimized (Cortex-A53 Multi-Thread)
- * PIPELINES: 
- * - Video & Audio via WebAssembly FFmpeg Virtual File System Sandbox
- * - Image True Pixel Re-encoding via Hardware-Accelerated Canvas Rendering Context
- * - Document-to-PDF Mapping via Vector Payload Injection (pdf-lib Core)
- * - PDF-to-Image Slicing via Mozilla PDF.js Graphics Vector Extraction
- * VERSION: Javed 1.0 / JARVIS Master Core
+ * BUG FIX: DOM Binding Lifecycle Safe-Wrap to eliminate file selection freezing.
+ * VERSION: Javed 1.1 / JARVIS Master Core
  * ==================================================================================
  */
 
@@ -51,9 +47,6 @@ async function loadSystemCoreEngines() {
     }
 }
 
-// Attach initializer sequence directly to document DOM loading vector
-window.addEventListener('DOMContentLoaded', loadSystemCoreEngines);
-
 /**
  * UNIFIED UI INTERFACE LOGGER
  * Safely manipulates the UI feedback blocks with crash protection and color matrix parameters
@@ -92,30 +85,40 @@ function updateSystemInterfaceLog(statusMessage, statusType = "info") {
 }
 
 /**
- * SYSTEM INPUT EVENT LISTENER
- * Tracks changes to target file inputs, performs string cleaning, and displays asset sizes
+ * SAFE LIFECYCLE DOM BINDING
+ * Delays input assignment until HTML structure is 100% verified to fix input freeze
  */
-const targetFileInputElement = document.getElementById('file-input');
-if (targetFileInputElement) {
-    targetFileInputElement.addEventListener('change', function(inputChangeEvent) {
-        if (inputChangeEvent.target.files.length > 0) {
-            uploadedFile = inputChangeEvent.target.files[0];
-            
-            const displayFileNameElement = document.getElementById('file-name');
-            const displayFileSizeElement = document.getElementById('file-size');
-            const displayFilePanelElement = document.getElementById('file-info');
-            
-            if (displayFileNameElement) displayFileNameElement.innerText = uploadedFile.name;
-            if (displayFileSizeElement) {
-                const calculatedKiloBytes = Math.round(uploadedFile.size / 1024);
-                displayFileSizeElement.innerText = calculatedKiloBytes + " KB";
+window.addEventListener('DOMContentLoaded', () => {
+    // Fire up WebAssembly cores safely
+    loadSystemCoreEngines();
+
+    const targetFileInputElement = document.getElementById('file-input');
+    if (targetFileInputElement) {
+        targetFileInputElement.addEventListener('change', function(inputChangeEvent) {
+            if (inputChangeEvent.target.files.length > 0) {
+                uploadedFile = inputChangeEvent.target.files[0];
+                
+                const displayFileNameElement = document.getElementById('file-name');
+                const displayFileSizeElement = document.getElementById('file-size');
+                const displayFilePanelElement = document.getElementById('file-info');
+                
+                if (displayFileNameElement) displayFileNameElement.innerText = uploadedFile.name;
+                if (displayFileSizeElement) {
+                    const calculatedKiloBytes = Math.round(uploadedFile.size / 1024);
+                    displayFileSizeElement.innerText = calculatedKiloBytes + " KB";
+                }
+                if (displayFilePanelElement) displayFilePanelElement.style.display = "block";
+                
+                updateSystemInterfaceLog("Target file stream read and validated successfully, sir.", "success");
+            } else {
+                uploadedFile = null;
             }
-            if (displayFilePanelElement) displayFilePanelElement.style.display = "block";
-            
-            updateSystemInterfaceLog("Target file stream read and validated successfully, sir.", "success");
-        }
-    });
-}
+        });
+        console.log("[SYSTEM SYSTEM] Input listener linked perfectly without blocking.");
+    } else {
+        console.error("[CRITICAL ERROR] Element selector '#file-input' was not found during script execution.");
+    }
+});
 
 /**
  * THE MAIN COMMAND DISPATCHER MATRIX
@@ -392,7 +395,4 @@ function executeTargetPdfToImageDeconstruction(sourcePdfFileAsset, outputImageEx
                 };
                 
                 updateSystemInterfaceLog("Drawing vector maps to visual pixel cache layout blocks...");
-                activePdfPageProxyInstance.render(renderContextConfigurationObject).promise.then(function() {
-                    
-                    let targetMimeTypeString = "image/png";
-    
+                activePdfPageProxyInstance.render(renderContextCo
