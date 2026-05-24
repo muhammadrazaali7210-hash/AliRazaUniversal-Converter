@@ -78,6 +78,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             background: rgba(59, 130, 246, 0.03);
+            -webkit-tap-highlight-color: transparent;
         }
 
         .drop-zone:hover {
@@ -90,8 +91,11 @@
             font-weight: 500;
         }
 
+        /* Input field is positioned offscreen but kept accessible for mobile browsers */
         #file-input {
-            display: none;
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
         }
 
         .file-details {
@@ -101,6 +105,7 @@
             padding: 12px;
             display: none;
             font-size: 0.85rem;
+            border-left: 3px solid var(--accent-cyan);
         }
 
         .control-group {
@@ -113,6 +118,7 @@
             color: var(--text-muted);
             margin-bottom: 6px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         select {
@@ -137,6 +143,12 @@
             font-weight: bold;
             margin-top: 20px;
             cursor: pointer;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+            transition: opacity 0.2s;
+        }
+
+        .btn-process:active {
+            opacity: 0.8;
         }
 
         .status-container {
@@ -145,13 +157,14 @@
             border-radius: 8px;
             background: rgba(59, 130, 246, 0.1);
             border: 1px solid rgba(59, 130, 246, 0.2);
-            display: none;
+            display: block;
             text-align: center;
         }
 
         #status-text {
             font-size: 0.9rem;
             font-weight: 500;
+            color: var(--accent-cyan);
         }
 
         canvas {
@@ -167,14 +180,16 @@
     </header>
 
     <div class="main-container">
-        <div class="drop-zone" onclick="document.getElementById('file-input').click()">
+        <div class="drop-zone" onclick="document.getElementById('file-input').click();">
             <p>Select Target Asset Data Stream</p>
-            <span style="display:block; font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Processor Hardware Unlocked & Active</span>
+            <span style="display:block; font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Tap anywhere inside this box to browse</span>
         </div>
+        
         <input type="file" id="file-input">
 
         <div class="file-details" id="file-info">
-            <strong>Active Asset:</strong> <span id="file-name">None</span> (<span id="file-size">0 KB</span>)
+            <strong>Active Asset:</strong> <span id="file-name">None</span><br>
+            <strong>Stream Size:</strong> <span id="file-size">0 KB</span>
         </div>
 
         <div class="control-group">
@@ -207,7 +222,7 @@
         <button class="btn-process" onclick="executeConversion()">Execute Deep Structural Rewrite</button>
 
         <div class="status-container" id="status-box">
-            <p id="status-text">Ready for instructions, sir...</p>
+            <p id="status-text">System core standing by, sir...</p>
         </div>
     </div>
 
